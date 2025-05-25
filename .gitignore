@@ -1,3 +1,9 @@
 venv/
 __pycache__/
 *.pyc
+
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# test files
+test_api.py
