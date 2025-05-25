@@ -7,3 +7,10 @@ __pycache__/
 
 # test files
 test_api.py
+
+# Ignore Jupyter Notebook files
+*.ipynb
+convert_to_json.ipynb
+
+# Ignore CSV files
+icd_9_cm_vol3.csv
