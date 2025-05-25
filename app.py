@@ -1,18 +1,11 @@
-from flask import Flask, jsonify
+from flask import Flask, make_response
 import json
 from collections import OrderedDict
 
 app = Flask(__name__)
 
-# Load ICD-9-CM Volume 3 data from JSON file
 with open("icd_9_cm_vol3.json") as f:
     icd9_data = json.load(f)
-
-@app.route("/", methods=["GET"])
-def home():
-    return jsonify({
-        "message": "ICD-9 CM Vol 3 API is running. Use /icd9/<code> to get procedure description."
-    })
 
 @app.route("/icd9/<code>", methods=["GET"])
 def get_icd9_description(code):
@@ -23,8 +16,15 @@ def get_icd9_description(code):
                 ("procedure_desc", entry.get("procedure_desc")),
                 ("exclude_procedure", entry.get("exclude_procedure"))
             ])
-            return jsonify(ordered_entry)
-    return jsonify({"error": "Code not found"}), 404
+            json_data = json.dumps(ordered_entry, indent=2)
+            response = make_response(json_data)
+            response.headers["Content-Type"] = "application/json; charset=utf-8"
+            return response
+    # fallback
+    error_data = json.dumps({"error": "Code not found"})
+    response = make_response(error_data, 404)
+    response.headers["Content-Type"] = "application/json; charset=utf-8"
+    return response
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0")
